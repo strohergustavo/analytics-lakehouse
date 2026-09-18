@@ -1,18 +1,10 @@
 # ANAC Flight Analytics Platform
 
-### 📊 Tech Stack
-
 ![Databricks](https://img.shields.io/badge/Databricks-Lakehouse-0078D4?style=for-the-badge&logo=databricks)
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python)
-![SQL](https://img.shields.io/badge/Spark%20SQL-CC2927?style=for-the-badge&logo=apache-spark)
-
-### 🛠️ Components
-
+![Spark SQL](https://img.shields.io/badge/Spark%20SQL-CC2927?style=for-the-badge&logo=apache-spark)
 ![Delta Lake](https://img.shields.io/badge/Delta%20Lake-00A3E0?style=for-the-badge)
 ![PySpark](https://img.shields.io/badge/PySpark-3.5+-FF6B35?style=for-the-badge)
-
-### ✅ Status
-
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 ![Production](https://img.shields.io/badge/Production%20Ready-brightgreen?style=for-the-badge)
 
