@@ -2,6 +2,13 @@
 .databricks/
 *.dbc
 *.whl
+*.jar
+
+# Databricks secrets & configs
+**/secrets.json
+**/.databrickscfg
+**/databricks.toml
+**/.databricks/
 
 # Python
 __pycache__/
@@ -14,12 +21,20 @@ dist/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Environment
+# Environment & credentials
 .env
+.env.*
 .venv/
 venv/
 ENV/
+*.pem
+*.key
+*.p12
+*.crt
 
 # IDE
 .idea/
@@ -31,10 +46,21 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Logs
 *.log
+logs/
 
 # Temporary
 *.tmp
 *.bak
+*.cache
+
+# Data artifacts (never commit data)
+*.csv
+*.parquet
+*.delta/
+*.json.gz
+*.zip
+*.tar.gz
