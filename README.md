@@ -1,13 +1,20 @@
 # ANAC Flight Analytics Platform
 
-![Databricks](https://img.shields.io/badge/Databricks-Lakehouse-FF3621?logo=databricks&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)
-![SQL](https://img.shields.io/badge/SQL-Delta_Lake-4285F4?logo=sql&logoColor=white)
-![PySpark](https://img.shields.io/badge/PySpark-3.5+-E25A1C?logo=apachespark&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
-![Status](https://img.shields.io/badge/Status-Production_ready-brightgreen)
+### 📊 Tech Stack
 
-A medallion-architecture lakehouse for Brazilian civil aviation data, built on Databricks and designed for AI-driven consumption. Ingests 12 months of ANAC's *Voo Regular Ativo* (VRA) dataset alongside reference registries (aerodromes, airlines, operation codes), transforms them through bronze → silver → gold layers, and exposes a denormalized One Big Table (OBT) optimized for natural-language querying via Genie Agent.
+![Databricks](https://img.shields.io/badge/Databricks-Lakehouse-0078D4?style=for-the-badge&logo=databricks)
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python)
+![SQL](https://img.shields.io/badge/Spark%20SQL-CC2927?style=for-the-badge&logo=apache-spark)
+
+### 🛠️ Components
+
+![Delta Lake](https://img.shields.io/badge/Delta%20Lake-00A3E0?style=for-the-badge)
+![PySpark](https://img.shields.io/badge/PySpark-3.5+-FF6B35?style=for-the-badge)
+
+### ✅ Status
+
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Production](https://img.shields.io/badge/Production%20Ready-brightgreen?style=for-the-badge)
 
 ---
 
