@@ -611,33 +611,3 @@ The star schema (`fact_flights` + `dim_airport`) supports traditional BI tools. 
 
 7. **No data freshness SLA:** The pipeline depends on ANAC publishing monthly CSVs. There is no automated check for when new data arrives.
 
----
-
-## Data Sources
-
-All data is public and sourced from **ANAC** (Agência Nacional de Aviação Civil), Brazil's civil aviation authority.
-
-| Dataset | Description | File Pattern | Encoding |
-|---------|-------------|--------------|----------|
-| VRA | Voo Regular Ativo — scheduled flight operations | `VRA_YYYYM.csv` (monthly) | UTF-8 |
-| Aerodromes | Brazilian airport registry | `AerodromosPublicos.csv` | ISO-8859-1 |
-| National Airlines | National airline registry | `pda_empresas_aereas_nacionais.csv` | UTF-8 |
-| Foreign Airlines | Foreign airline registry | `pda_empresas_aereas_estrangeiros.csv` | UTF-8 |
-| Operation Codes | Flight type code reference | (seed table, not from ANAC) | N/A |
-
-Available at: [dados.gov.br](https://dados.gov.br).
-
----
-
-## References
-
-- Kimball, R. & Ross, M. *The Data Warehouse Toolkit*, 3rd ed. Wiley, 2013.
-- Databricks. "Medallion Architecture." [Databricks Documentation](https://docs.databricks.com/lakehouse/medallion.html).
-- Databricks. "Unity Catalog." [Databricks Documentation](https://docs.databricks.com/data-governance/unity-catalog.html).
-- Databricks. "Delta Lake." [delta.io](https://delta.io/).
-- Databricks. "Genie." [Databricks Documentation](https://docs.databricks.com/genie/).
-- ANAC. "Dados Abertos." [dados.gov.br](https://dados.gov.br).
-
----
-
-*Built on Databricks Lakehouse | Unity Catalog | Delta Lake | Spark Declarative Pipelines | Genie Agent*
