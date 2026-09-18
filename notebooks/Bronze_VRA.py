@@ -1,0 +1,106 @@
+# Databricks notebook source
+# DBTITLE 1,Bronze — VRA Ingestion
+# MAGIC %md
+# MAGIC # Bronze — VRA Ingestion
+# MAGIC
+# MAGIC Raw ingestion of ANAC's *Voo Regular Ativo* (VRA) dataset from CSV files in the Unity Catalog volume into `airline_operations.bronze.vra`. All columns are loaded as strings with no transformation; metadata columns track provenance and ingestion time. Full-refresh, idempotent load.
+
+# COMMAND ----------
+
+from pyspark.sql import functions as F
+
+path = "/Volumes/airline_operations/bronze/data/VRA/*.csv"
+table = "airline_operations.bronze.vra"
+
+# COMMAND ----------
+
+raw_df = (
+    spark.read.format("csv")
+    .option("sep", ";")
+    .option("header", "true")
+    .option("skipRows", 1)          
+    .option("escape", '"')
+    .option("encoding", "UTF-8")
+    .option("mode", "PERMISSIVE")  
+    .load(path)
+)
+
+print("columns read from file:")
+for c in raw_df.columns:
+    print(f"  {c!r}")
+
+# COMMAND ----------
+
+bronze = raw_df.withColumn(
+    "_arquivo_origem", F.col("_metadata.file_name")
+).withColumn(
+    "_ingerido_em", F.current_timestamp()
+)
+
+
+# COMMAND ----------
+
+(
+    bronze.write.format("delta")
+    .mode("overwrite")
+    .option("overwriteSchema", "true")
+    .option("delta.columnMapping.mode", "name")
+    .option("delta.enableDeletionVectors", "true")
+    .saveAsTable(table)
+)
+
+print(f"{table}: {spark.table(table).count():,} linhas")
+
+
+# COMMAND ----------
+
+spark.sql(f"""
+    COMMENT ON TABLE {table} IS
+    'Bronze - VRA (Voo Regular Ativo) da ANAC, 12 meses (ago/2025 a jul/2026).
+     Dado bruto: todas as colunas string, nenhuma linha descartada.
+     Carga full refresh idempotente a partir de /Volumes/airline_operations/bronze/data/VRA/.'
+""")
+
+# COMMAND ----------
+
+# DBTITLE 1,Tags + column comments for bronze.vra
+# --- Tags ---
+spark.sql("""
+    ALTER TABLE airline_operations.bronze.vra SET TAGS (
+        'layer' = 'bronze', 'domain' = 'aviation', 'source' = 'ANAC-VRA', 'grain' = 'flight_step'
+    )
+""")
+print("Tags applied to bronze.vra")
+
+# --- Column comments (Portuguese for Genie Agent compatibility) ---
+VRA_COLUMNS = {
+    "ICAO Empresa Aérea":       "Codigo ICAO de tres letras da companhia que operou a etapa.",
+    "Número Voo":              "Numero comercial do voo divulgado pela companhia.",
+    "Código Autorização (DI)": "Codigo de autorizacao da etapa (DI) publicado pela ANAC.",
+    "Código Tipo Linha":       "Codigo do tipo de linha: N e C domesticas, I e G internacionais.",
+    "ICAO Aeródromo Origem":   "Codigo ICAO do aeroporto de partida.",
+    "ICAO Aeródromo Destino":  "Codigo ICAO do aeroporto de chegada.",
+    "Partida Prevista":        "Data e hora programadas para a partida, na hora local do aeroporto de origem.",
+    "Partida Real":            "Data e hora em que a aeronave efetivamente partiu. Nulo em voo cancelado.",
+    "Chegada Prevista":        "Data e hora programadas para a chegada, na hora local do aeroporto de destino.",
+    "Chegada Real":            "Data e hora em que a aeronave efetivamente pousou. Nulo em voo cancelado.",
+    "Situação Voo":            "Situacao informada pela companhia: REALIZADO ou CANCELADO.",
+    "Código Justificativa":    "Motivo declarado do atraso. Vazio em toda a janela deste projeto (IAC 1504 revogada em abril de 2020).",
+    "_arquivo_origem":         "Auditoria: nome do arquivo CSV mensal da ANAC de onde a linha veio.",
+    "_ingerido_em":            "Auditoria: momento em que a linha entrou no bronze.",
+}
+
+for col, comment in VRA_COLUMNS.items():
+    spark.sql(f"ALTER TABLE airline_operations.bronze.vra ALTER COLUMN `{col}` COMMENT '{comment}'")
+print(f"{len(VRA_COLUMNS)} column comments applied to bronze.vra")
+
+# COMMAND ----------
+
+display(
+    spark.sql(f"""
+        SELECT _arquivo_origem, COUNT(*) AS linhas, MAX(_ingerido_em) AS ingerido_em
+        FROM {table}
+        GROUP BY _arquivo_origem
+        ORDER BY _arquivo_origem
+    """)
+)
